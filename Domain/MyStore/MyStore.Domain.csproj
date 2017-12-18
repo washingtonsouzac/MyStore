@@ -49,6 +49,7 @@
     <Compile Include="Account\Entities\User.cs" />
     <Compile Include="Account\Enums\ERole.cs" />
     <Compile Include="Account\Scopes\UserScopes.cs" />
+    <Compile Include="Account\Specs\UserSpecs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
