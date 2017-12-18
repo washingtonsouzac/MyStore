@@ -1,4 +1,5 @@
 ﻿using MyStore.Domain.Account.Enums;
+using MyStore.Domain.Account.Scopes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,51 +42,33 @@ namespace MyStore.Domain.Account.Entities
 
         public void Register()
         {
+            this.RegisterScopeIsValid();
             Password = EncryptPassword(Password);
         }
 
         public void Verify(string verificationCode)
         {
-            if (verificationCode == VerificationCode)
-                Verified = true;
+            this.VerificationScopeIsValid(verificationCode);
+            Verified = (verificationCode == VerificationCode);
         }
 
         public void Activate(string activationCode)
         {
-            if (!Verified)
-                return;
-
-            if (activationCode == ActivationCode)
-                Active = true;
+            this.ActivationScopeIsValid(activationCode);
+            Active = (activationCode == ActivationCode);
         }
 
         public void RequestLogin(string username)
         {
-            if (!Active)
-                return;
-
-            if (!Verified)
-                return;
-
-            if (username.ToUpper() != Username.ToUpper())
-                return;
-
+            this.RequestLoginScopeIsValid(username);
             AuthorizationCode = GenerateAuytorizationCode();
             LastAuthorizationCodeRequest = DateTime.Now;
         }
 
-        public bool Authenticate(string authorizationCode, string password)
+        public void Authenticate(string authorizationCode, string password)
         {
-            if (!Active)
-                return false;
-
-            if (!Verified)
-                return false;
-
-            if (authorizationCode != AuthorizationCode || password != Password)
-                return false;
-
-            return true;
+            this.LoginScopeIsValid(authorizationCode, password);
+            LastLoginDate = DateTime.Now;
         }
 
         public string GenerateAuytorizationCode()
